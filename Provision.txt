@@ -1,0 +1,372 @@
+//***************************************************************************************
+//***********************************PROVISION MANAGER***********************************
+//***************************~ By Abhijith, Mathews & Akamsh*****************************
+//***************************************************************************************
+
+//HEADER FILES***************************************************************************
+#include<fstream.h>
+#include<conio.h>
+#include<dos.h>  //for sleep() function
+#include<process.h>
+#include<string.h>
+#include<stdio.h>
+
+int flag=0;
+
+fstream f1, f2;
+
+void inputformat()  //formating the display table
+{textcolor(YELLOW);
+gotoxy(15,9);cprintf("ITEM");
+gotoxy(25,9);cprintf("QUANTITY IN KG");
+gotoxy(50,9);cprintf("PRICE IN RS.");
+gotoxy(15,10);cprintf("RICE");
+gotoxy(15,11);cprintf("WHEAT");
+gotoxy(15,12);cprintf("SUGAR");
+}
+
+//CLASS***********************************************************************************
+class provision
+{
+float r1,r2,w1,w2,s1,s2;
+float rq,wq,sq;  //quantity of rice, wheat and suger
+float rp,wp,sp;  //price of rice, wheat and sugar
+char name[20];  //name of the customer
+long phone;  //phone number of the customer
+
+public:
+  
+int month; //month 
+
+
+provision()  //constructor
+{
+strcpy(name,"NULL");
+r1=r2=w1=w2=s1=s2=0;
+rp=40.0;
+wp=30.0;
+sp=35.0;
+}
+
+void dispdefault()
+{
+gotoxy(50,10);cout<<rp<<"  ";
+gotoxy(50,11);cout<<wp<<"  ";
+gotoxy(50,12);cout<<sp<<"  ";
+}
+
+void checkdate();
+
+void updatedate()     //to check the validity of the month entered
+{
+gotoxy(45,4);textcolor(RED);cprintf("ERROR! CHECK MONTH ENTERED!");
+gotoxy(61,3);cin>>month;
+checkdate();
+}
+
+void inputdate()  //to enter month
+{
+gotoxy(6,2);cout<<"Enter Month(MM)";
+gotoxy(61,3);cin>>month;
+checkdate();
+}
+
+void nameinput()  //to enter name
+{
+gotoxy(3,5);cout<<"Enter Name: ";
+gets(name);
+}
+
+void Register()  //to register the customer
+{
+gotoxy(3,7);cout<<"Enter Contact Number: ";
+cin>>phone;
+gotoxy(3,9);cout<<"Thank you for registering!";
+gotoxy(3,25);cout<<"Have a wonderful experience!";
+}
+
+char* getname()  //returns the name of the customer
+{
+return name;
+}
+
+void maininput1()  //to enter the quantity of rice, wheat and sugar
+{
+gotoxy(25,10);cin>>r1;
+gotoxy(25,11);cin>>w1;
+gotoxy(25,12);cin>>s1;
+}
+
+void maininput2()  //to enter the quantity of rice, wheat and sugar
+{
+gotoxy(25,10);cin>>r2;
+gotoxy(25,11);cin>>w2;
+gotoxy(25,12);cin>>s2;
+}
+
+
+void updateprice()  //to enter the price per kg of rice, wheat and sugar
+{
+gotoxy(50,10);cin>>rp;
+gotoxy(50,11);cin>>wp;
+gotoxy(50,12);cin>>sp;
+}
+
+void proj()  //to project the required quantities of rice, wheat and sugar
+{
+if(r2==0)
+rq=r1;
+else
+rq=(r1+r2)/2;
+if(w2==0)
+wq=w1;
+else
+wq=(w1+w2)/2;
+if(s2==0)
+sq=s1;
+else
+sq=(s1+s2)/2;
+}
+
+void mainoutput();
+
+}p1,p2;  //global object
+
+void provision::checkdate()
+{
+ if(month<1 && month>12)
+   updatedate();
+}
+
+void provision::mainoutput()  //to display quantities and prices of rice, wheat and sugar
+{
+inputformat();
+gotoxy(25,10);cout<<rq;
+gotoxy(25,11);cout<<wq;
+gotoxy(25,12);cout<<sq;
+gotoxy(50,10);cout<<rp;
+gotoxy(50,11);cout<<wp;
+gotoxy(50,12);cout<<sp;
+}
+//END OF CLASS****************************************************************************
+
+//MAIN()**********************************************************************************
+void main()
+{
+
+clrscr();
+textcolor(RED+BLINK);
+gotoxy(5,2);cprintf("WELCOME");
+textcolor(YELLOW);
+gotoxy(5,5);cprintf("PROVISION MANAGER");
+textcolor(MAGENTA+BLINK);
+gotoxy(3,6);cprintf("TELL US YOUR REQUIREMENTS, WE'LL TELL, WHAT YOU NEED");
+{
+textcolor(LIGHTGRAY);
+gotoxy(5,7);cout<<"Made by Mathews, Abhijith & Akamsh";
+gotoxy(5,8);cout<<"Cool Solutions Ltd.";
+gotoxy(3,12);cout<<"We would like to thank everyone involved in the making of this program !";
+gotoxy(7,17);cout<<"SPECIAL THANKS TO ";
+gotoxy(3,18);cout<<"Hema Mam ( Computer Science Teacher ) ";
+gotoxy(3,19);cout<<"Leena Mam ( Computer Science Teacher ) ";
+gotoxy(3,20);cout<<"Parents ";
+gotoxy(3,21);cout<<"Friends ";
+gotoxy(3,25);cout<<"No Babies or Animals were harmed in the making of this Program !! :p ";
+}
+sleep(12);
+
+start :   //label 1
+f1.open("prov.dat",ios::in|ios::ate|ios::binary);  //opens or creates file, prov.dat
+if(f1.eof()!=0)
+{
+ f1.close();
+ f1.open("prov.dat", ios::out|ios::binary);
+ p1.nameinput();
+ goto register;
+}
+sleep(1);
+clrscr();
+p1.nameinput();
+f1.seekg(0, ios::beg);
+
+while(f1)
+{
+ f1.read((char*)&p2,sizeof(p2));
+
+ if(strcmpi(p2.getname(),p1.getname())!=0)
+ {
+  register:
+  char ch;
+  gotoxy(3,2);cout<<"Sorry! You are not registered!";
+  gotoxy(3,3);cout<<"Do you want to register?(y\\n): ";
+  cin>>ch;
+  if(ch=='Y'||ch=='y')
+  {
+   p1.Register();
+   f1.write((char*)&p1, sizeof(p1));
+  }
+  else
+  {
+   gotoxy(10,5);cout<<"Thank You For Using This Product!!!";
+   gotoxy(10,7);cout<<"EXITING";
+   for(int i=0;i<6;++i)
+   {
+    sleep(1);
+    cout<<". ";
+   }
+   exit(0);
+  }
+ }
+
+ else if(strcmpi(p1.getname(),p2.getname())==0)
+ {
+  gotoxy(3,2);cout<<"Thank You For Logging In :) ";
+  gotoxy(3,12);cout<<"Loading";
+  for(int i=0;i<6;++i)
+  {
+  sleep(1);
+  cout<<". ";
+  }
+  goto menu;
+  }
+}
+f1.close();  //closes file, prov.dat
+
+
+cout<<"\t\tPress ENTER to continue:";
+getch();
+clrscr();
+
+menu :   //label 2
+textcolor(GREEN);
+gotoxy(7,3);cprintf("\t\t\t MENU\n");
+gotoxy(7,4);cprintf("1.Enter Your Current Purchase");
+gotoxy(7,5);cprintf("2.Enter Your Previous Purchase");
+gotoxy(7,6);cprintf("3.View Projection");
+gotoxy(7,7);cprintf("4.Delete User");
+gotoxy(7,8);cprintf("5.Switch User");
+gotoxy(7,9);cprintf("6.Exit");
+gotoxy(7,12);cout<<"Enter Your Desired option:";
+int opt;
+gotoxy(33,12);cin>>opt;
+
+sleep(1);
+gotoxy(3,14);cout<<"LOADING";
+
+for(int i=0;i<6;++i)
+{
+sleep(1);
+cout<<". ";
+}
+
+sleep(2);
+clrscr();
+
+
+
+switch(opt)
+{
+case 1: clrscr();
+	f1.open("prov.dat",ios::ate|ios::binary);
+	inputformat();
+	p1.dispdefault();
+	p1.inputdate();
+	p1.maininput1();
+	f1.write((char*)&p1,sizeof(p1));
+	gotoxy(3,5);cout<<"Do You Want To Update prices?(y\\n):";
+	char opt1;
+	cin>>opt1;
+	if(opt1=='Y'||opt1=='y')
+	{
+	 gotoxy(3,6); cout<<"Enter updated prices\n";
+	 p1.updateprice();
+	 f1.write((char*)&p1,sizeof(p1));
+	}
+	else
+	{
+	 gotoxy(5,6);
+	 cout<<"Thank You!\n";
+	}
+	sleep(5);
+	clrscr();
+	f1.close();
+	goto menu;
+
+case 2: clrscr();
+	f1.open("prov.dat",ios::ate|ios::binary);
+	p1.inputdate();
+	inputformat();
+	p1.dispdefault();
+	p1.maininput2();
+	f1.write((char*)&p1,sizeof(p1));
+	gotoxy(3,5);cout<<"Do You Want To Update prices?(y\\n):";
+	char opt2;
+	cin>>opt2;
+	if(opt1=='Y'||opt1=='y')
+	{
+	 gotoxy(3,7); cout<<"Enter updated prices\n";
+	 p1.updateprice();
+	 f1.write((char*)&p1,sizeof(p1));
+	}
+	else
+	{
+	 gotoxy(5,6);
+	 cout<<"Thank you!\n";
+	}
+	sleep(5);
+	clrscr();
+	f1.close();
+	goto menu;
+
+case 3: clrscr();
+	cout<<"Projection For Next Month: "<<endl;
+	p1.proj();
+	p1.mainoutput();
+	sleep(5);
+	clrscr();
+	goto menu;
+
+case 4: clrscr();
+	f1.open("prov.dat", ios::in|ios::binary);
+	f2.open("tprov.dat", ios::out|ios::binary);
+	while(f1.read((char*)&p2,sizeof(p2)))
+	{
+	 if(strcmpi(p1.getname(),p2.getname())==0)
+	  flag=1;
+	 else
+	  f2.write((char*)&p2, sizeof(p2));
+	}
+	remove("prov.dat");
+	remove("prov.dat");
+	rename("tprov.dat", "prov.dat");
+	f1.close();
+	f2.close();
+	gotoxy(3,3);cout<<"User Deleted Successfully!"<<endl;
+	gotoxy(3,4);cout<<"Press 1 To Switch User or Press Anything Else To Exit:";
+	int opt3;cin>>opt3;
+	if(opt3==1)
+	 goto start;
+	else
+	 goto exit;
+
+case 5: goto start;
+
+case 6: exit: exit(1);		//label (exit)
+
+default: gotoxy(10,15);textcolor(RED);cprintf("WRONG INPUT!");
+	 sleep(1);
+	 gotoxy(10,15);
+	 for(int i=0;i<14;++i)
+	 {
+	  cout<<" ";
+	 }
+	 goto menu;
+
+}  //End of Switch
+
+}
+
+
+
+
+
